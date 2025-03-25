@@ -1,30 +1,34 @@
 <IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
-
     RewriteEngine On
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Handle X-XSRF-Token Header
-    RewriteCond %{HTTP:x-xsrf-token} .
-    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
-
-    # Redirect Trailing Slashes If Not A Folder...
+    # Redirect Trailing Slashes If Not A Folder
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Send Requests To Front Controller...
+    # Send Requests To Laravel Front Controller (index.php)
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+
 </IfModule>
+ // this is htaccess for public directory
+
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^storage/(.*)$ /storage/app/public/$1 [L]
-</IfModule>
+
+    # Redirect all requests to Laravel's public folder inside sybbexph
+    RewriteCond %{REQUEST_URI} !^/sybbexph/public/
+    RewriteRule ^(.*)$ sybbexph/public/$1 [L]
+
+ 
+    # Allow direct access to storage/app/public (e.g., for profile photos)
+    RewriteRule ^storage/(.*)$ sybbexph/storage/app/public/$1 [L]
+</IfModule> 
+
+// This is htaccess for public_html directory
